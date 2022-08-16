@@ -8,11 +8,17 @@
     <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 </head>
 <body>
-    <div class="context_name">
-        <span>글 제목</span>
-        <input type="text" />
-    </div>
-    <div id="editor" class="context_edit"></div>
+    <form action="/content/save" method="POST">
+        <div class="context_name">
+            <span>글 제목</span>
+            <input name="title" type="text" />
+        </div><br />
+        <div id="editor" class="context_edit"></div>
+        <input type="hidden" id="quill_html" name="content" />
+        <div class="context_save">
+            <button type="submit">Save</button>
+        </div>
+    </form>
 
     <script>
         function quilljsediterInit() {
@@ -30,6 +36,9 @@
             };
 
             quill = new Quill('#editor', option);
+            quill.on('text-change', function() {
+                document.getElementById("quill_html").value = quill.root.innerHTML;
+            })
         }
         quilljsediterInit();
     </script>

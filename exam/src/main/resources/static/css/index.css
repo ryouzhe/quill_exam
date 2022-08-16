@@ -5,10 +5,17 @@
 
 .context_name {
     width: 100%;
-    height: 10vh;
+    height: 5vh;
+    vertical-align: center;
 }
 
 .context_edit {
-    widht: 100%;
+    width: 100%;
     height: 80vh;
+}
+
+.context_save {
+    width: 100%;
+    height: 5vh;
+    vertical-align: center;
 }
