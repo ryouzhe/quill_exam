@@ -6,6 +6,8 @@
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
     <link href="../static/css/index.css" rel="stylesheet" />
     <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body>
     <form action="/content/save" method="POST">
@@ -24,11 +26,16 @@
         function quilljsediterInit() {
             var option = {
                 modules: {
+                    imageResize: {
+                        displaySize: true
+                    },
                     toolbar : [
                         [{header: [1,2,false]}],
                         ['bold','italic','underline'],
                         ['image','code-block'],
-                        [{list: 'orderred'}, {list: 'bullet'}]
+                        [{'align': []}],
+                        [{list: 'orderred'}, {list: 'bullet'}],
+                        ['clean']
                     ]
                 },
                 placeholder: 'input context',
@@ -38,9 +45,51 @@
             quill = new Quill('#editor', option);
             quill.on('text-change', function() {
                 document.getElementById("quill_html").value = quill.root.innerHTML;
-            })
+            });
+
+            quill.getModule('toolbar').addHandler('image', function() {
+                selectLocalImage();
+            });
         }
+
+        // 이미지 콜백 함수
+        function selectLocalImage() {
+            const fileInput = document.createElement('input');
+            fileInput.setAttribute('type', 'file');
+            console.log("input.type" + fileInput.type);
+
+            fileInput.click();
+
+            fileInput.addEventListener("change", function () {
+                const formData = new FormData();
+                const file = fileInput.files[0];
+                formData.append('uploadFile', file);
+
+                $.ajax({
+                    type: 'post',
+                    enctype: 'multipart/form-data',
+                    url: '/imageUpload',
+                    data: formData,
+                    dataType: 'text',
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log("----------success-----------");
+                        console.log(data);
+                        const range = quill.getSelection();
+                        data = data.replace(/\\/g, '/');
+                        quill.insertEmbed(range.index, 'image', "/display?filePath=" + data);
+                    },
+                    error: function (err) {
+                        console.log("-----------error-----------");
+                        console.log(err);
+                    }
+                });
+            });
+        }
+
         quilljsediterInit();
+
     </script>
 </body>
 </html>
