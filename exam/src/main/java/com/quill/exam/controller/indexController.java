@@ -9,11 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -21,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -30,11 +29,29 @@ public class indexController {
 
     private final ContextRepository contextRepository;
 
+    // index page, 작성된 글을 list로 출력
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        List<Context> contextList = contextRepository.findAll();
+        model.addAttribute("contextList", contextList);
         return "index";
     }
 
+    // write page
+    @GetMapping("/write")
+    public String write() {
+        return "write";
+    }
+
+    // update page
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id, Model model) {
+        Context updateContext = contextRepository.findById(id).get();
+        model.addAttribute("updateContext", updateContext);
+        return "update";
+    }
+
+    // write page 에서 저장하기 누르면 작성한 content 저장함
     @PostMapping("/content/save")
     public String contentSave(ContextDto contextDto) {
         Context contextEntity = new Context();
@@ -46,6 +63,7 @@ public class indexController {
         return "redirect:/";
     }
 
+    // Quill Editor 이미지 추가 시 Local Storage에 이미지 저장
     @ResponseBody
     @PostMapping("/imageUpload")
     public String imgUpload (MultipartFile[] uploadFile) {
@@ -91,6 +109,7 @@ public class indexController {
         return null;
     }
 
+    // Local Storage에 저장된 이미지를 Preview로 출력하기
     @ResponseBody
     @GetMapping("/display")
     public ResponseEntity<byte[]> showImageGET(@RequestParam("filePath") String filePath) {
