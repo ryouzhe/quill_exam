@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contents Detail</title>
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+    <link href="/css/index.css" rel="stylesheet" />
+    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+</head>
+<body>
+    <div class="navi">
+        <div class="navi_list"><a href="/">Home</a></div>
+        <div class="navi_list"><a href="/write">Write</a></div>
+    </div>
+    <div class="content">
+        {{#context}}
+        <div class="content_list">
+            <div class="content_id">{{id}}</div>
+            <div class="content_title">
+                <a href="/update/{{id}}">{{title}}</a>
+            </div>
+        </div>
+        <div id="editor" class="context_edit"></div>
+        <div class="context_save">
+            <button type="button" onclick="moveUpdate('{{id}}');">Update</button>
+        </div>
+        {{/context}}
+    </div>
+    <script>
+        function moveUpdate(content_id) {
+            location.href = "/update/" + content_id;
+        }
+
+        function quilljsediterInit() {
+            var option = {
+                modules: {
+                    toolbar: false
+                },
+                readOnly: true,
+                theme: 'snow'
+            };
+
+            quill = new Quill('#editor', option);
+            {{#context}}
+            let text = `{{{content}}}`;
+            quill.root.innerHTML = text;
+            {{/context}}
+        }
+
+        quilljsediterInit();
+
+    </script>
+</body>
+</html>

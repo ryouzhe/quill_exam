@@ -43,6 +43,14 @@ public class indexController {
         return "write";
     }
 
+    // detail page
+    @GetMapping("/detail/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        Context detailContext = contextRepository.findById(id).get();
+        model.addAttribute("context", detailContext);
+        return "detail";
+    }
+
     // update page
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model) {
@@ -55,6 +63,18 @@ public class indexController {
     @PostMapping("/content/save")
     public String contentSave(ContextDto contextDto) {
         Context contextEntity = new Context();
+        contextEntity.setTitle(contextDto.getTitle());
+        contextEntity.setContent(contextDto.getContent());
+
+        contextRepository.save(contextEntity);
+
+        return "redirect:/";
+    }
+
+    // update page 에서 수정하기 누르면 작성한 content 저장함
+    @PostMapping("content/update/{id}")
+    public String contentUpdate(ContextDto contextDto, @PathVariable Long id) {
+        Context contextEntity = contextRepository.findById(id).get();
         contextEntity.setTitle(contextDto.getTitle());
         contextEntity.setContent(contextDto.getContent());
 
