@@ -1,8 +1,10 @@
 package com.quill.exam.controller;
 
 import com.quill.exam.domain.Context;
+import com.quill.exam.domain.Image;
 import com.quill.exam.dto.ContextDto;
 import com.quill.exam.repository.ContextRepository;
+import com.quill.exam.repository.ImageRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +30,7 @@ import java.util.UUID;
 public class indexController {
 
     private final ContextRepository contextRepository;
+    private final ImageRepository imageRepository;
 
     // index page, 작성된 글을 list로 출력
     @GetMapping("/")
@@ -39,7 +42,10 @@ public class indexController {
 
     // write page
     @GetMapping("/write")
-    public String write() {
+    public String write(Model model) {
+        Context contextEntity = new Context();
+        contextRepository.save(contextEntity);
+        model.addAttribute("context", contextEntity);
         return "write";
     }
 
@@ -61,13 +67,12 @@ public class indexController {
 
     // write page 에서 저장하기 누르면 작성한 content 저장함
     @PostMapping("/content/save")
-    public String contentSave(ContextDto contextDto) {
-        Context contextEntity = new Context();
+    public String contentSave(ContextDto contextDto, @PathVariable Long id) {
+        Context contextEntity = contextRepository.findById(id).get();
         contextEntity.setTitle(contextDto.getTitle());
         contextEntity.setContent(contextDto.getContent());
 
         contextRepository.save(contextEntity);
-
         return "redirect:/";
     }
 
@@ -79,16 +84,18 @@ public class indexController {
         contextEntity.setContent(contextDto.getContent());
 
         contextRepository.save(contextEntity);
-
         return "redirect:/";
     }
 
     // Quill Editor 이미지 추가 시 Local Storage에 이미지 저장
     @ResponseBody
-    @PostMapping("/imageUpload")
-    public String imgUpload (MultipartFile[] uploadFile) {
-        // 업로드 파일 저장 경로
+    @PostMapping("/imageUpload/{id}")
+    public String imgUpload (MultipartFile[] uploadFile, @PathVariable Long id) {
 
+        Context contextEntity = contextRepository.findById(id).get();
+        Image imageEntity = new Image();
+
+        // 업로드 파일 저장 경로
         String uploadFolder = "C:\\Temp";
         String result;
 
@@ -118,6 +125,9 @@ public class indexController {
                 System.out.println("-------------------");
                 System.out.println("Image save complete");
                 System.out.println("-------------------");
+                imageEntity.setPath(result);
+                imageEntity.setContext(contextEntity);
+                imageRepository.save(imageEntity);
                 return result;
             } catch (Exception e) {
                 System.out.println("-------------------");

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Tag</title>
+    <link href="/css/index.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="navi">
+        <div class="navi_list"><a href="/">Home</a></div>
+        <div class="navi_list"><a href="/write">Write</a></div>
+    </div>
+    <div class="content">
+        {{#imageList}}
+        <div class="image_wrap">
+            <div id="image_{{id}}" class="image_box"></div>
+        </div>
+        {{/imageList}}
+    </div>
+    <script>
+
+    </script>
+</body>
+</html>

@@ -2,10 +2,9 @@ package com.quill.exam.domain;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,4 +15,7 @@ public class Context {
 
     private String title;
     private String content;
+
+    @OneToMany(mappedBy = "context", cascade = CascadeType.REMOVE)
+    private List<Image> images = new ArrayList<Image>();
 }

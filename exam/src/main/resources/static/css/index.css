@@ -26,6 +26,15 @@
     flex-direction: row;
 }
 
+.image_wrap {
+    width: 100%;
+    display: flex;
+}
+
+.image_box {
+    width: 80%;
+}
+
 .content_id {
     width: 30%;
     text-align: center;

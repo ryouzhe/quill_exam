@@ -59,6 +59,7 @@
         }
 
         // 이미지 콜백 함수
+        {{#context}}
         function selectLocalImage() {
             const fileInput = document.createElement('input');
             fileInput.setAttribute('type', 'file');
@@ -74,7 +75,7 @@
                 $.ajax({
                     type: 'post',
                     enctype: 'multipart/form-data',
-                    url: '/imageUpload',
+                    url: '/imageUpload/{{id}}',
                     data: formData,
                     dataType: 'text',
                     processData: false,
@@ -93,6 +94,7 @@
                 });
             });
         }
+        {{/context}}
 
         quilljsediterInit();
 
