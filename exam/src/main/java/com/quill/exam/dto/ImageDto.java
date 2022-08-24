@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ImageDto {
-    private String path;
+    private String fileName;
     private Boolean hasTag;
 
     @Builder
     public ImageDto(Image image) {
-        this.path = image.getPath();
+        this.fileName = image.getFileName();
         this.hasTag = image.isHasTag();
     }
 }

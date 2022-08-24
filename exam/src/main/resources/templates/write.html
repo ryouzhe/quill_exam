@@ -14,7 +14,8 @@
         <div class="navi_list"><a href="/">Home</a></div>
         <div class="navi_list"><a href="/write">Write</a></div>
     </div>
-    <form action="/content/save" method="POST">
+    {{#context}}
+    <form action="/content/{{id}}/save" method="POST">
         <div class="context_name">
             <div>글 제목</div>
             <div>
@@ -27,7 +28,7 @@
             <button type="submit">Save</button>
         </div>
     </form>
-
+    {{/context}}
     <script>
         function quilljsediterInit() {
             var option = {

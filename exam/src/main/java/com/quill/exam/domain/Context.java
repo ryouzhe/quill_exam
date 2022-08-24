@@ -14,6 +14,7 @@ public class Context {
     private Long id;
 
     private String title;
+    @Column(length = 10000)
     private String content;
 
     @OneToMany(mappedBy = "context", cascade = CascadeType.REMOVE)

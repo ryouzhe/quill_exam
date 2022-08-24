@@ -16,6 +16,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,14 +67,34 @@ public class indexController {
     }
 
     // write page 에서 저장하기 누르면 작성한 content 저장함
-    @PostMapping("/content/save")
+    @PostMapping("/content/{id}/save")
     public String contentSave(ContextDto contextDto, @PathVariable Long id) {
         Context contextEntity = contextRepository.findById(id).get();
         contextEntity.setTitle(contextDto.getTitle());
         contextEntity.setContent(contextDto.getContent());
 
         contextRepository.save(contextEntity);
-        return "redirect:/";
+        return "redirect:/" + contextEntity.getId() + "/tag";
+    }
+
+    // Image Tag page
+    @GetMapping("/{id}/tag")
+    public String imageTag(@PathVariable Long id, Model model) {
+        Context contextEntity = contextRepository.findById(id).get();
+        List<Image> imageList = imageRepository.findByContext(contextEntity);
+        model.addAttribute("imageList", imageList);
+        return "imageTag";
+    }
+
+    // Image hasTag Value 변경
+    @GetMapping("/changeTagValue/{id}")
+    @ResponseBody
+    public Boolean changeTagValue(@PathVariable Long id) {
+        Image imageEntity = imageRepository.findById(id).get();
+        imageEntity.setHasTag(!imageEntity.isHasTag());
+        imageRepository.save(imageEntity);
+
+        return imageEntity.isHasTag();
     }
 
     // update page 에서 수정하기 누르면 작성한 content 저장함
@@ -125,7 +146,7 @@ public class indexController {
                 System.out.println("-------------------");
                 System.out.println("Image save complete");
                 System.out.println("-------------------");
-                imageEntity.setPath(result);
+                imageEntity.setFileName(uploadFileName);
                 imageEntity.setContext(contextEntity);
                 imageRepository.save(imageEntity);
                 return result;

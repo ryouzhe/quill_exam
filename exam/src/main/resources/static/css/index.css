@@ -29,6 +29,7 @@
 .image_wrap {
     width: 100%;
     display: flex;
+    flex-direction: column;
 }
 
 .image_box {

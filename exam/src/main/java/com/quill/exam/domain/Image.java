@@ -12,7 +12,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String path;
+    private String fileName;
     private boolean hasTag = false;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Image Tag</title>
     <link href="/css/index.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body>
     <div class="navi">
@@ -13,12 +14,38 @@
     <div class="content">
         {{#imageList}}
         <div class="image_wrap">
-            <div id="image_{{id}}" class="image_box"></div>
+            <p>Image_{{id}}</p>
+            <div id="image_{{id}}" class="image_box">
+                <img src="/post/image/{{fileName}}" style="width: 100%;" onclick="changeHasTag({{id}})"/>
+                <input id="hasTag_{{id}}" type="hidden" value="{{hasTag}}" />
+            </div>
         </div>
+        <br />
         {{/imageList}}
+        <br />
+        <button type="button" onclick="moveMain();">태그 완료</button>
     </div>
     <script>
-
+        function moveMain () {
+            location.href = "/";
+        }
+        function changeHasTag(image_id) {
+            $.ajax({
+                type: 'get',
+                url: '/changeTagValue/' + image_id,
+                dataType: 'json',
+                success: function (res) {
+                    console.log("----------success-----------");
+                    console.log(res);
+                    alert("change hasTag Value!!");
+                    document.getElementById("hasTag_" + image_id).value = res;
+                    },
+                error: function (err) {
+                    console.log("-----------error-----------");
+                    console.log(err);
+                }
+            });
+        }
     </script>
 </body>
 </html>

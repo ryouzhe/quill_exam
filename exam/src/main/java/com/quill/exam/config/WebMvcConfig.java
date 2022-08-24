@@ -2,11 +2,21 @@ package com.quill.exam.config;
 
 import org.springframework.boot.web.servlet.view.MustacheViewResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private String connectPath = "/post/image/**";
+    private String resourcePath = "file:///C:/Temp/";
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(connectPath)
+                .addResourceLocations(resourcePath);
+    }
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
