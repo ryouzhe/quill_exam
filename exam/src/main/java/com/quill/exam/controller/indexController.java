@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -66,6 +64,26 @@ public class indexController {
         return "update";
     }
 
+    // context에 저장되는 img 구별해서 저장
+    @PostMapping("/isImgSave/{id}")
+    @ResponseBody
+    public String isImgSave(@RequestParam Map<String, Object> imgStr, @PathVariable Long id) {
+        String imgFileName = (String)imgStr.get("imgStr");
+        String[] fileNameList = imgFileName.split(",");
+
+        List<Image> imageList = imageRepository.findByContext(contextRepository.findById(id).get());
+
+        for(Image img : imageList) {
+            boolean contain =  Arrays.stream(fileNameList).anyMatch(str -> img.getFileName().equals(str));
+            if(!contain) {
+                System.out.println("--------img delete---------");
+                imageRepository.delete(img);
+            }
+        }
+
+        return "complete";
+    }
+
     // write page 에서 저장하기 누르면 작성한 content 저장함
     @PostMapping("/content/{id}/save")
     public String contentSave(ContextDto contextDto, @PathVariable Long id) {
@@ -89,7 +107,7 @@ public class indexController {
     // Image hasTag Value 변경
     @GetMapping("/changeTagValue/{id}")
     @ResponseBody
-    public Boolean changeTagValue(@PathVariable Long id) {
+    public boolean changeTagValue(@PathVariable Long id) {
         Image imageEntity = imageRepository.findById(id).get();
         imageEntity.setHasTag(!imageEntity.isHasTag());
         imageRepository.save(imageEntity);

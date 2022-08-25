@@ -15,7 +15,7 @@
         <div class="navi_list"><a href="/write">Write</a></div>
     </div>
     {{#context}}
-    <form action="/content/{{id}}/save" method="POST">
+    <form id="context_form" action="/content/{{id}}/save" method="POST">
         <div class="context_name">
             <div>글 제목</div>
             <div>
@@ -25,11 +25,48 @@
         <div id="editor" class="context_edit"></div>
         <input type="hidden" id="quill_html" name="content" />
         <div class="context_save">
-            <button type="submit">Save</button>
+            <button type="button" onclick="isImgSave();">Save</button>
         </div>
     </form>
     {{/context}}
     <script>
+        let imgStr = '';
+
+        {{#context}}
+        function isImgSave() {
+
+            let content = document.querySelector('#editor').getElementsByTagName("img");
+            let imgLength = content.length;
+
+            for(let i=0; i < imgLength; i++) {
+                let temp = content[i].getAttribute("src");
+                let arr = temp.split("/");
+
+                if(i === 0) imgStr += arr[3];
+                else imgStr += ',' + arr[3];
+                console.log(imgStr);
+            }
+
+            $.ajax({
+                type: 'post',
+                url: '/isImgSave/{{id}}',
+                data: {
+                    imgStr: imgStr,
+                },
+                dataType: 'text',
+                success: function (res) {
+                    console.log("-----------success---------");
+                    console.log(res);
+                    document.getElementById("context_form").submit();
+                },
+                error: function (err) {
+                    console.log("-----------error-----------");
+                    console.log(err);
+                }
+            });
+        }
+        {{/context}}
+
         function quilljsediterInit() {
             var option = {
                 modules: {
@@ -81,12 +118,11 @@
                     dataType: 'text',
                     processData: false,
                     contentType: false,
-                    success: function (data) {
+                    success: function (res) {
                         console.log("----------success-----------");
-                        console.log(data);
                         const range = quill.getSelection();
-                        data = data.replace(/\\/g, '/');
-                        quill.insertEmbed(range.index, 'image', "/display?filePath=" + data);
+                        res = res.replace(/\\/g, '/');
+                        quill.insertEmbed(range.index, 'image', "/display?filePath=" + res);
                     },
                     error: function (err) {
                         console.log("-----------error-----------");
@@ -96,9 +132,7 @@
             });
         }
         {{/context}}
-
         quilljsediterInit();
-
     </script>
 </body>
 </html>
