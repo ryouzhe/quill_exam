@@ -34,12 +34,11 @@
 
         {{#context}}
         function isImgSave() {
-
-            let content = document.querySelector('#editor').getElementsByTagName("img");
-            let imgLength = content.length;
+            let content_img = document.querySelector('#editor').getElementsByTagName("img");
+            let imgLength = content_img.length;
 
             for(let i=0; i < imgLength; i++) {
-                let temp = content[i].getAttribute("src");
+                let temp = content_img[i].getAttribute("src");
                 let arr = temp.split("/");
 
                 if(i === 0) imgStr += arr[3];
@@ -66,7 +65,6 @@
             });
         }
         {{/context}}
-
         function quilljsediterInit() {
             var option = {
                 modules: {
@@ -95,7 +93,6 @@
                 selectLocalImage();
             });
         }
-
         // 이미지 콜백 함수
         {{#context}}
         function selectLocalImage() {

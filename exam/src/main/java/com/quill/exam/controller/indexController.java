@@ -52,7 +52,9 @@ public class indexController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Context detailContext = contextRepository.findById(id).get();
+        List<Image> detailImage = imageRepository.findByContext(detailContext);
         model.addAttribute("context", detailContext);
+        model.addAttribute("imageList", detailImage);
         return "detail";
     }
 

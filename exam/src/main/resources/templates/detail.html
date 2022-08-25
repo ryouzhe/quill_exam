@@ -16,9 +16,7 @@
         {{#context}}
         <div class="content_list">
             <div class="content_id">{{id}}</div>
-            <div class="content_title">
-                <a href="/update/{{id}}">{{title}}</a>
-            </div>
+            <div class="content_title">{{title}}</div>
         </div>
         <div id="editor" class="context_edit"></div>
         <div class="context_save">
@@ -30,7 +28,35 @@
         function moveUpdate(content_id) {
             location.href = "/update/" + content_id;
         }
+        function addTagIcon() {
+            let content_img = document.querySelector("#editor").getElementsByTagName("img");
+            let parent_Nodes = [];
+            let temp_saveNode;
+            let img_cnt = 0;
+            let parent_cnt = 0;
 
+            {{#imageList}}
+            parent_Nodes.push(content_img[img_cnt].parentNode);
+            if("{{hasTag}}" === "true") {
+                temp_saveNode = content_img[img_cnt];
+                parent_Nodes[parent_cnt].removeChild(content_img[img_cnt]);
+                parent_Nodes[parent_cnt].setAttribute("style", "position: relative;");
+
+                let tagIcon = document.createElement("img");
+                tagIcon.setAttribute("class", "tag_icon");
+                tagIcon.setAttribute("src", "/img/Icon ionic-ios-heart.svg");
+
+                parent_Nodes[parent_cnt].appendChild(temp_saveNode);
+                parent_Nodes[parent_cnt].appendChild(tagIcon);
+                img_cnt += 2;
+                parent_cnt++;
+            }
+            else {
+                img_cnt++;
+                parent_cnt++;
+            }
+            {{/imageList}}
+        }
         function quilljsediterInit() {
             var option = {
                 modules: {
@@ -46,9 +72,8 @@
             quill.root.innerHTML = text;
             {{/context}}
         }
-
         quilljsediterInit();
-
+        addTagIcon();
     </script>
 </body>
 </html>
