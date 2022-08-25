@@ -29,6 +29,23 @@
         function moveMain () {
             location.href = "/";
         }
+        function addTagIcon (image_id) {
+            let imgDiv = document.getElementById("image_" + image_id);
+            let hasTag = document.getElementById("hasTag_" + image_id).value;
+            console.log(hasTag);
+            if(hasTag === 'true') {
+                console.log("Append Child");
+                let tagIcon = document.createElement("img");
+                tagIcon.setAttribute("id", "tagIcon_" + image_id);
+                tagIcon.setAttribute("class", "tag_icon");
+                tagIcon.setAttribute("src", "/img/Icon ionic-ios-heart.svg");
+                imgDiv.appendChild(tagIcon);
+            }
+            else {
+                console.log("Remove Child");
+                imgDiv.removeChild(document.getElementById("tagIcon_" + image_id));
+            }
+        }
         function changeHasTag(image_id) {
             $.ajax({
                 type: 'get',
@@ -39,6 +56,8 @@
                     console.log(res);
                     alert("change hasTag Value!!");
                     document.getElementById("hasTag_" + image_id).value = res;
+
+                    addTagIcon(image_id);
                     },
                 error: function (err) {
                     console.log("-----------error-----------");

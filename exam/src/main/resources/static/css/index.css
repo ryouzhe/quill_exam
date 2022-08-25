@@ -34,6 +34,13 @@
 
 .image_box {
     width: 80%;
+    position: relative;
+}
+
+.tag_icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
 }
 
 .content_id {
