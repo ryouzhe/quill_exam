@@ -15,7 +15,7 @@
         <div class="navi_list"><a href="/write">Write</a></div>
     </div>
     {{#updateContext}}
-    <form action="/content/update/{{id}}" method="POST">
+    <form id="context_form" action="/content/{{id}}/save" method="POST">
         <div class="context_name">
             <div>글 제목</div>
             <div>
@@ -25,11 +25,46 @@
         <div id="editor" class="context_edit"></div>
         <input type="hidden" id="quill_html" name="content" />
         <div class="context_save">
-            <button type="submit">Update</button>
+            <button type="button" onclick="isImgSave();">Update</button>
         </div>
     </form>
     {{/updateContext}}
     <script>
+        let imgStr = '';
+
+        {{#updateContext}}
+        function isImgSave() {
+            let content_img = document.querySelector('#editor').getElementsByTagName("img");
+            let imgLength = content_img.length;
+
+            for(let i=0; i < imgLength; i++) {
+                let temp = content_img[i].getAttribute("src");
+                let arr = temp.split("/");
+
+                if(i === 0) imgStr += arr[3];
+                else imgStr += ',' + arr[3];
+                console.log(imgStr);
+            }
+
+            $.ajax({
+                type: 'post',
+                url: '/isImgSave/{{id}}',
+                data: {
+                    imgStr: imgStr,
+                },
+                dataType: 'text',
+                success: function (res) {
+                    console.log("-----------success---------");
+                    console.log(res);
+                    document.getElementById("context_form").submit();
+                },
+                error: function (err) {
+                    console.log("-----------error-----------");
+                    console.log(err);
+                }
+            });
+        }
+        {{/updateContext}}
         function quilljsediterInit() {
             var option = {
                 modules: {
